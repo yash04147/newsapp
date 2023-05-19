@@ -1,8 +1,19 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
+import PropTypes from "prop-types";
 
 export class News extends Component {
+  static defaultProps = {
+    country: "in",
+    pageSize: 9,
+    category: "general",
+  };
+  PropTypes = {
+    country: PropTypes.string,
+    pageSize: PropTypes.number,
+    category: PropTypes.string,
+  };
   constructor() {
     super();
     this.state = {
@@ -13,7 +24,7 @@ export class News extends Component {
   }
 
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=36007f38fc674de1a855ec1908ff4714&page=1&pagesize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apikey=36007f38fc674de1a855ec1908ff4714&page=1&pagesize=${this.props.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
@@ -27,7 +38,11 @@ export class News extends Component {
 
   handlePrevClick = async () => {
     // console.log("prev");
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=36007f38fc674de1a855ec1908ff4714&pagesize=${
+    let url = `https://newsapi.org/v2/top-headlines?country=${
+      this.props.country
+    }&category=${
+      this.props.category
+    }&apikey=36007f38fc674de1a855ec1908ff4714&pagesize=${
       this.props.pageSize
     }&page=${this.state.page - 1}`;
     this.setState({ loading: true });
@@ -42,7 +57,11 @@ export class News extends Component {
   };
   handleNextClick = async () => {
     // console.log("next");
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=36007f38fc674de1a855ec1908ff4714&pagesize=${
+    let url = `https://newsapi.org/v2/top-headlines?country=${
+      this.props.country
+    }&category=${
+      this.props.category
+    }&apikey=36007f38fc674de1a855ec1908ff4714&pagesize=${
       this.props.pageSize
     }&page=${this.state.page + 1}`;
     this.setState({ loading: true });
@@ -59,7 +78,9 @@ export class News extends Component {
     console.log("render");
     return (
       <div className="container my-3 ">
-        <h2 className="text-center">NewsHunt - Top Headlines</h2>
+        <h2 className="text-center" style={{ margin: "30px 0px" }}>
+          NewsHunt - Top Headlines
+        </h2>
         {this.state.loading && <Spinner />}
         <div className="row">
           {!this.state.loading &&
@@ -80,7 +101,7 @@ export class News extends Component {
           <button
             disabled={this.state.page <= 1}
             type="button"
-            className="btn btn-dark"
+            className="btn btn-danger"
             onClick={this.handlePrevClick}
           >
             &larr; Previous
@@ -91,7 +112,7 @@ export class News extends Component {
               Math.ceil(this.state.totalResults / this.props.pageSize)
             }
             type="button"
-            className="btn btn-dark"
+            className="btn btn-danger "
             onClick={this.handleNextClick}
           >
             Next &rarr;
